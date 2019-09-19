@@ -1,0 +1,302 @@
+<div id="container-{{layout.qInfo.qId}}" qv-extension style="height: 100%; width:100%; position: relative; overflow: auto;">
+    <div id="table-container-{{layout.qInfo.qId}}" style="width:98%">
+        <table id="table-{{layout.qInfo.qId}}" class="table-3">
+            <thead style="font-size: {{layout.props.headerFontSize}};">
+                <tr>
+                    <th rowspan="2" colspan="2"></th>
+                    <th rowspan="2" colspan="1" class="text-left" style="max-width:80px!important;vertical-align:bottom !important;">
+                        <span ng-repeat="col in columnOrder track by $index" ng-show="table.headers[col].qDimensionInfo.pTicker &&  $index > 4">
+                            {{table.headers[col].qFallbackTitle}}
+                        </span>
+                    </th>
+                    <th rowspan="2" colspan="1" class="text-left" style="vertical-align:bottom !important;">
+                        {{table.headers[4].qFallbackTitle}}
+                    </th>
+                    <th ng-repeat="col in columnOrder track by $index"
+                        rowspan="{{table.headers[col].qMeasureInfo.qAttrExprInfo[1].qFallbackTitle ? 1:2}}"
+                        colspan="{{table.headers[col].qMeasureInfo.pColspanTitle - CheckHide(col)[1]}}"
+                        ng-click="table.headers[col].orderBy();"
+                        style="font-size: {{layout.props.headerFontSize}}; width:{{table.headers[col].qMeasureInfo.pColumnSize || table.headers[col].qDimensionInfo.pColumnSize}}"
+                        class="{{table.headers[col].qMeasureInfo.pColspanTitle > 1 ? 'text-center':(table.headers[col].qMeasureInfo.pTextAlign || table.headers[col].qDimensionInfo.pTextAlign)}}
+                        {{$index <= 4 ? 'ng-hide':''}} {{table.headers[col].qMeasureInfo.pColspanTitle == 0 ? 'ng-hide':''}}
+                        {{table.headers[col].qDimensionInfo.pTicker &&  $index > 4 ? 'ng-hide':''}}
+                        {{CheckHide(col)[1]==table.headers[col].qMeasureInfo.pColspanTitle ? 'ng-hide':''}} text-type1">
+                        <span ng-show="!table.headers[col].qMeasureInfo.qAttrExprInfo[1].qFallbackTitle && (table.headers[col].qMeasureInfo.pColspanTitle > 0 || $index < dimLength)">
+                            {{table.headers[col].qFallbackTitle}}
+                        </span>
+                        <span ng-show="table.headers[col].qMeasureInfo.qAttrExprInfo[1].qFallbackTitle">
+                            <span ng-show="table.headers[col].qMeasureInfo.qAttrExprInfo[1].qMaxText!=null">
+                                {{table.headers[col].qMeasureInfo.qAttrExprInfo[1].qMaxText}}
+                            </span>
+                            <span ng-show="table.headers[col].qMeasureInfo.qAttrExprInfo[1].qMaxText==null">
+                                {{table.headers[col].qMeasureInfo.qAttrExprInfo[1].qFallbackTitle}}
+                            </span>
+                        </span>
+                    </th>
+                    <th ng-show="layout.props.showChart" class="text-center text-type1" style="font-size: {{layout.props.headerSize}}" rowspan="2">
+                        {{layout.props.chartfield}}
+                    </th>
+                    <th style="width:30px;" ng-show="layout.props.showHelpIcon" rowspan="2">
+
+                    </th>
+                </tr>
+                <tr>
+                    <th ng-repeat="col in columnOrder track by $index"
+                        class="{{table.headers[col].qMeasureInfo.pTextAlign || table.headers[col].qDimensionInfo.pTextAlign}}
+                        {{$index < dimLength ? 'ng-hide':''}}
+                        {{table.headers[col].qMeasureInfo.qAttrExprInfo[1].qFallbackTitle || table.headers[col].qMeasureInfo.pColspanTitle==0 ? '':'ng-hide'}}
+                        {{CheckHide(col)[0]==1 ? 'ng-hide':''}}"
+                        style="width:{{table.headers[col].qMeasureInfo.pColumnSize || table.headers[col].qDimensionInfo.pColumnSize}}">
+                        {{table.headers[col].qFallbackTitle}}
+                    </th>
+                </tr>
+                <tr class="totals" ng-show="layout.props.showTotals">
+                    <th colspan="{{layout.qHyperCube.qDimensionInfo.length}}" class="text-left">
+                        {{layout.props.labelTotals}}
+                    </th>
+                    <th ng-repeat="total in table.totals" class="text-right">
+                        {{total.qText}}
+                    </th>
+                </tr>
+            </thead>
+            <tbody style="font-size: {{layout.props.bodyFontSize}}">
+                <tr ng-repeat-start="level1 in cubeGrouped track by $index" ng-init="$level1Index = $index" class="bg-level1">
+                    <td class="td-level1"
+                        colspan="{{5 + meaLength - CountHideMeasures() + (layout.props.showGroupIndex?1:0) + (layout.props.showChart?1:0) + (layout.props.showHelpIcon?1:0)}}">
+                        <span class="text-level1">{{level1.name}}</span>
+                    </td>
+                </tr>
+                <tr ng-repeat-start="level2 in level1.dataL1 track by $index" ng-init="$level2Index = $index">
+                    <td hidden>X</td>
+                </tr>
+                <tr ng-show="level2.name || layout.props.showGroupIndex">
+                    <td colspan="4" class="">
+                        <span class="text-level2">
+                            <span ng-click="CollapseChilds(level2)" ng-show="layout.props.showExpandButton" class="text-secondary">
+                                <i class="fas fa-plus-circle" ng-show="level2.childsHidden"></i>
+                                <i class="fas fa-minus-circle" ng-show="!level2.childsHidden"></i>
+                            </span>
+                            <span>{{level2.name}}</span>
+                        </span>
+                    </td>
+                    <!-- Columns -->
+                    <td ng-repeat="col in columnOrder track by $index" ng-init="$cellIndex = $index"
+                        class="{{$cellIndex > 4 ? '':'ng-hide'}} {{table.headers[col].qDimensionInfo.pTicker?'ng-hide':''}}
+                        {{CheckHide(col)[0]==1 ? 'ng-hide':''}}
+                        {{table.headers[col].qMeasureInfo.pTextAlign || table.headers[col].qDimensionInfo.pTextAlign}}"
+                        style="background-color: {{table.headers[col].qMeasureInfo.pColumnColor}}; font-size: {{table.headers[col].qMeasureInfo.pFontSize ||table.headers[col].qDimensionInfo.pFontSize}};">
+                        <!-- Cells -->
+                        <span class="{{table.headers[col].qMeasureInfo.pType==0 || table.headers[col].qDimensionInfo.pType==0 ? '':'ng-hide'}}
+                              {{table.headers[col].qMeasureInfo.pTextClass || table.headers[col].qDimensionInfo.pTextClass}}
+                                  {{layout.qHyperCube.qDataPages[tableIndex[level2.parentIndex2].page].qMatrix[tableIndex[level2.parentIndex2].index][$cellIndex].qAttrExps.qValues[0].qText}}">
+                            {{table.rows[level2.parentIndex2].cells[col].qText}}
+                        </span>
+                        <span ng-show="table.headers[col].qMeasureInfo.pType==1 || table.headers[col].qDimensionInfo.pType==1"
+                              ng-bind-html="table.rows[level2.parentIndex2].cells[col].qText">
+                        </span>
+                        <span ng-show="table.headers[col].qMeasureInfo.pType==2 || table.headers[col].qDimensionInfo.pType==2">
+                            <i class="{{table.rows[level2.parentIndex2].cells[col].qText}}"></i>
+                        </span><!-- Cells -->
+                    </td><!-- Columns -->
+                    <td ng-show="layout.props.showChart" class="text-center">
+                        <div ng-style="{'height':layout.props.chartHeight,'width':layout.props.chartWidth}" style="margin:auto" ng-show="level2.parentL2">
+                            <div class="{{'chart2-' + table.rows[level2.parentIndex2].cells[0].qText}} div-chart"></div>
+                        </div>
+                    </td>
+                    <td ng-show="layout.props.showHelpIcon" class="text-center border-b border-white bg-yellow">
+                        <i class="fas fa-ellipsis-v fa-lg text-white" ng-show="level2.parentL2" ng-click="ShowFrame(table.rows[level2.parentIndex2].cells[0].qText)" style="padding:5px;"></i>
+                    </td>
+                </tr>
+                <tr ng-repeat-start="level3 in level2.dataL2 track by $index" ng-init="$level3Index = $index" ng-show="!level2.childsHidden">
+                    <td rowspan="{{level2.countItems * 2 + (level2.dataL2.length - level2.countParents) * 2}}"
+                        ng-show="$level3Index==0"
+                        class="text-center text-level2 border-r-secondary border-b-secondary"
+                        style="white-space:nowrap !important;">
+                        <span hidden>{{level3.count + 1}}</span>
+                    </td>
+                    <td hidden>Y ({{level2.countItems}},{{level2.dataL2.length}},{{level2.countParents}})</td>
+                </tr>
+                <tr ng-show="!level2.childsHidden">
+                    <td colspan="3" class="border-b-secondary">
+                        <span class="text-level3">
+                            <span ng-click="CollapseChilds(level3, level2)" ng-show="layout.props.showExpandButton && level3.dataL3.length > 0" class="text-secondary">
+                                <i class="fas fa-plus-circle" ng-show="level3.childsHidden"></i>
+                                <i class="fas fa-minus-circle" ng-show="!level3.childsHidden"></i>
+                            </span>
+                            <span ng-show="layout.props.showExpandButton && level3.dataL3.length == 0" class="text-secondary">
+                                <i class="fas fa-circle"></i>
+                            </span>
+                            <i class="{{layout.qHyperCube.qDataPages[tableIndex[level3.parentIndex3].page].qMatrix[tableIndex[level3.parentIndex3].index][0].qAttrExps.qValues[2].qText}}"></i>
+                            <span ng-show="level3.dataL3.length==0">{{level3.count + 1}}</span>
+                        </span>
+                        <span ng-repeat="subtitle in table.rows[level3.parentIndex3].cells track by $index" ng-init="$subtitleIndex = $index"
+                              class="text-subtitle {{subtitle.qDimensionInfo.pTicker ? '':'ng-hide'}}">
+                            {{subtitle.qText}} -
+                        </span>
+                        <span class="text-level3 cPointer" ng-click="GoUrlMashup(table.rows[level3.parentIndex3].cells[0].qText)">
+                            <span ng-show="!table.headers[3].qDimensionInfo.qAttrExprInfo[0].qFallbackTitle">
+                                {{level3.name}}
+                            </span>
+                            <span ng-show="table.headers[3].qDimensionInfo.qAttrExprInfo[0].qFallbackTitle">
+                                {{layout.qHyperCube.qDataPages[tableIndex[level3.parentIndex3].page].qMatrix[tableIndex[level3.parentIndex3].index][3].qAttrExps.qValues[0].qText}}
+                            </span>
+                        </span>
+                    </td>
+                    <!-- Columns -->
+                    <td ng-repeat="col in columnOrder track by $index" ng-init="$cellIndex = $index"
+                        class="{{$cellIndex > 4 ? '':'ng-hide'}} {{table.headers[col].qDimensionInfo.pTicker?'ng-hide':''}}
+                        {{CheckHide(col)[0]==1 ? 'ng-hide':''}} border-b-secondary
+                        {{table.headers[col].qMeasureInfo.pTextAlign || table.headers[col].qDimensionInfo.pTextAlign}}"
+                        style="background-color: {{table.headers[col].qMeasureInfo.pColumnColor}}; font-size: {{table.headers[col].qMeasureInfo.pFontSize ||table.headers[col].qDimensionInfo.pFontSize}};">
+                        <!-- Cells -->
+                        <span class="{{table.headers[col].qMeasureInfo.pType==0 || table.headers[col].qDimensionInfo.pType==0 ? '':'ng-hide'}}
+                              {{table.headers[col].qMeasureInfo.pTextClass || table.headers[col].qDimensionInfo.pTextClass}}
+                                  {{layout.qHyperCube.qDataPages[tableIndex[level3.parentIndex3].page].qMatrix[tableIndex[level3.parentIndex3].index][$cellIndex].qAttrExps.qValues[0].qText}}">
+                            {{table.rows[level3.parentIndex3].cells[col].qText}}
+                        </span>
+                        <span ng-show="table.headers[col].qMeasureInfo.pType==1 || table.headers[col].qDimensionInfo.pType==1"
+                              ng-bind-html="table.rows[level3.parentIndex3].cells[col].qText">
+                        </span>
+                        <span ng-show="table.headers[col].qMeasureInfo.pType==2 || table.headers[col].qDimensionInfo.pType==2">
+                            <i class="{{table.rows[level3.parentIndex3].cells[col].qText}}"></i>
+                        </span><!-- Cells -->
+                    </td><!-- Columns -->
+                    <td ng-show="layout.props.showChart" class="text-center border-b-secondary">
+                        <div ng-style="{'height':layout.props.chartHeight,'width':layout.props.chartWidth}" style="margin:auto" ng-show="level3.parentL3">
+                            <div class="{{'chart2-' + table.rows[level3.parentIndex3].cells[0].qText}} div-chart"></div>
+                        </div>
+                    </td>
+                    <td ng-show="layout.props.showHelpIcon" class="text-center border-b border-white bg-yellow">
+                        <i class="fas fa-ellipsis-v fa-lg text-white" ng-show="level3.parentL3" ng-click="ShowFrame(table.rows[level3.parentIndex3].cells[0].qText)" style="padding:5px;"></i>
+                    </td>
+                </tr>
+                <tr ng-repeat-start="level4 in level3.dataL3 track by $index" ng-init="$level4Index = $index" ng-show="!level2.childsHidden && !level3.childsHidden">
+                    <td rowspan="{{level3.dataL3.length * 2}}"
+                        ng-show="$level4Index==0"
+                        class="text-center text-level3 border-r-secondary border-b-secondary"
+                        style="white-space:nowrap !important;width:20px!important;">
+                        <span>{{level3.count + 1}}</span>
+                    </td>
+                    <td hidden>Z ({{level3.dataL3.length}},{{level3.countParents}})</td>
+                </tr>
+                <tr ng-show="!level2.childsHidden && !level3.childsHidden">
+                    <td colspan="2" class="border-b-secondary">
+                        <i class="{{layout.qHyperCube.qDataPages[tableIndex[level4.dataL4[0].index].page].qMatrix[tableIndex[level4.dataL4[0].index].index][0].qAttrExps.qValues[2].qText}}"></i>
+                        <span class="text-level4" hidden>
+                            {{level3.count + 1}}.{{$level4Index + 1}}
+                        </span>
+                        <span ng-repeat="subtitle in table.rows[level4.dataL4[0].index].cells track by $index" ng-init="$subtitleIndex = $index"
+                              class="text-subtitle {{subtitle.qDimensionInfo.pTicker ? '':'ng-hide'}}">
+                            {{subtitle.qText}} -
+                        </span>
+                        <span class="text-level4 cPointer" ng-click="GoUrlMashup(table.rows[level4.dataL4[0].index].cells[0].qText)">
+                            {{level4.name}}
+                        </span>
+                    </td>
+                    <!-- Columns -->
+                    <td ng-repeat="col in columnOrder track by $index" ng-init="$cellIndex = $index"
+                        class="{{$cellIndex > 4 ? '':'ng-hide'}} {{table.headers[col].qDimensionInfo.pTicker?'ng-hide':''}}
+                        {{CheckHide(col)[0]==1 ? 'ng-hide':''}} border-b-secondary
+                        {{table.headers[col].qMeasureInfo.pTextAlign || table.headers[col].qDimensionInfo.pTextAlign}}"
+                        style="background-color: {{table.headers[col].qMeasureInfo.pColumnColor}}; font-size: {{table.headers[col].qMeasureInfo.pFontSize ||table.headers[col].qDimensionInfo.pFontSize}};">
+                        <!-- Cells -->
+                        <span class="{{table.headers[col].qMeasureInfo.pType==0 || table.headers[col].qDimensionInfo.pType==0 ? '':'ng-hide'}}
+                              {{table.headers[col].qMeasureInfo.pTextClass || table.headers[col].qDimensionInfo.pTextClass}}
+                                  {{layout.qHyperCube.qDataPages[tableIndex[level4.dataL4[0].index].page].qMatrix[tableIndex[level4.dataL4[0].index].index][$cellIndex].qAttrExps.qValues[0].qText}}">
+                            {{table.rows[level4.dataL4[0].index].cells[col].qText}}
+                        </span>
+                        <span ng-show="table.headers[col].qMeasureInfo.pType==1 || table.headers[col].qDimensionInfo.pType==1"
+                              ng-bind-html="table.rows[level4.dataL4[0].index].cells[col].qText">
+                        </span>
+                        <span ng-show="table.headers[col].qMeasureInfo.pType==2 || table.headers[col].qDimensionInfo.pType==2">
+                            <i class="{{table.rows[level4.dataL4[0].index].cells[col].qText}}"></i>
+                        </span>
+                        <!-- Cells -->
+                    </td><!-- Columns -->
+                    <td ng-show="layout.props.showChart" class="text-center border-b-secondary">
+                        <div ng-style="{'height':layout.props.chartHeight,'width':layout.props.chartWidth}" style="margin:auto">
+                            <div class="{{'chart2-' + table.rows[level4.dataL4[0].index].cells[0].qText}} div-chart"></div>
+                        </div>
+                    </td>
+                    <td ng-show="layout.props.showHelpIcon" class="text-center border-b border-white bg-yellow">
+                        <i class="fas fa-ellipsis-v fa-lg text-white" ng-click="ShowFrame(table.rows[level4.dataL4[0].index].cells[0].qText)" style="padding:5px;"></i>
+                    </td>
+                </tr>
+                <tr ng-repeat-end ng-hide="true"></tr>
+                <tr ng-repeat-end ng-hide="true"></tr>
+                <tr ng-repeat-end ng-hide="true"></tr>
+                <tr ng-repeat-end ng-hide="true"></tr>
+            </tbody>
+        </table>
+        <button ng-if="table.rowCount>table.rows.length" ng-click="GetMoreData(table)" class="lui-button more">More...</button>
+    </div>
+</div>
+<div ng-show="loading" style="width:100%;height:100%;position:absolute;top:0px;left:0;z-index:9999;background-color: rgba(0,0,0,.2)" class="text-center">
+    <div style="position:relative;top:40%;">
+        <i class="fas fa-spinner fa-spin fa-5x text-info loadingIcon"></i>
+    </div>
+</div>
+<!-- iFrame -->
+<div id="iframe" ng-show="sFrame" style="position:fixed;top:20%;left:8%;height:70%;width:84%;border:none;z-index:9999;">
+    <div style="width:100%;height:100%;">
+        <button class="lui-button lui-button--success" ng-click="sFrame=false" style="width:100%">
+            <i class="lui-icon lui-icon--close"></i>
+        </button>
+        <div style="border:1px solid black;height:100%;width:100%;margin:auto;background-color: white">
+            <div style="height:95%;margin:10px 10px 5px 10px;">
+                <div style="height:5%;width:100%;" id="{{'QV02'+layout.qInfo.qId}}">
+                </div>
+                <div style="height:5%;width:100%;" id="{{'QV01'+layout.qInfo.qId}}">
+                </div>
+                <hr style="background-color:#febc1b;border: none">
+                <div style="height:75%;width:100%;">
+                    <div style="float:left;height:100%;width:57.5%;">
+                        <hr style="background-color:#5591c4;border: none">
+                        <div style="margin: 0 20px 0 20px;height: 40%;">
+                            <div style="height: 50%;" id="{{'QV05'+layout.qInfo.qId}}">
+                            </div>
+                            <div style="height: 50%;">
+                                <div style="float:left;height:100%;width:25%;" id="{{'QV19'+layout.qInfo.qId}}">
+                                </div>
+                                <div style="float:left;height:100%;width:25%;" id="{{'QV20'+layout.qInfo.qId}}">
+                                </div>
+                                <div style="float:left;height:100%;width:25%;" id="{{'QV07'+layout.qInfo.qId}}">
+                                </div>
+                                <div style="float:left;height:100%;width:25%;" id="{{'QV11'+layout.qInfo.qId}}">
+                                </div>
+                            </div>
+                        </div>
+                        <div style="margin: 0 20px 0 20px;height:50%;">
+                            <div style="float:left;height:100%;width:50%;">
+                                <div style="height:33.33%;" id="{{'QV06'+layout.qInfo.qId}}">
+                                </div>
+                                <div style="height:33.33%;" id="{{'QV14'+layout.qInfo.qId}}">
+                                </div>
+                                <div style="height:33.33%;" id="{{'QV15'+layout.qInfo.qId}}">
+                                </div>
+                            </div>
+                            <div style="float:left;height:100%;width:50%;">
+                                <div style="height:33.33%;" id="{{'QV08'+layout.qInfo.qId}}">
+                                </div>
+                                <div style="height:33.33%;" id="{{'QV12'+layout.qInfo.qId}}">
+                                </div>
+                                <div style="height:33.33%;" id="{{'QV16'+layout.qInfo.qId}}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="float:left;height:100%;width:5%;"></div>
+                    <div style="float:left;height:100%;width:37.5%;">
+                        <hr style="background-color:#5591c4;border: none">
+                        <div style="margin: 0 20px 0 20px;height: 35%;" id="{{'QV04'+layout.qInfo.qId}}">
+                        </div>
+                        <div style="height: 55%;" id="{{'QV13'+layout.qInfo.qId}}">
+                        </div>
+                    </div>
+                </div>
+                <div style="height:10%;width:100%;" id="{{'QV17'+layout.qInfo.qId}}">
+                </div>
+            </div>
+        </div>
+    </div>
+</div><!-- iFrame End-->
