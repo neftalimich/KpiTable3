@@ -25,12 +25,7 @@
                             {{table.headers[col].qFallbackTitle}}
                         </span>
                         <span ng-show="table.headers[col].qMeasureInfo.qAttrExprInfo[1].qFallbackTitle">
-                            <span ng-show="table.headers[col].qMeasureInfo.qAttrExprInfo[1].qMaxText!=null">
-                                {{table.headers[col].qMeasureInfo.qAttrExprInfo[1].qMaxText}}
-                            </span>
-                            <span ng-show="table.headers[col].qMeasureInfo.qAttrExprInfo[1].qMaxText==null">
-                                {{table.headers[col].qMeasureInfo.qAttrExprInfo[1].qFallbackTitle}}
-                            </span>
+                            {{layout.qHyperCube.qDataPages[0].qMatrix[0][col].qAttrExps.qValues[1].qText}}
                         </span>
                     </th>
                     <th ng-show="layout.props.showChart" class="text-center text-type1" style="font-size: {{layout.props.headerSize}}" rowspan="2">
