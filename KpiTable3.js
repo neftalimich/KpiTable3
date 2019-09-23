@@ -228,7 +228,6 @@ define([
                 });
 
                 //console.log("cubeGrouped", $scope.cubeGrouped);
-                $scope.loading = false;
                 //$scope.LoadCharts("cube1Grouped");
             };
 
@@ -528,24 +527,26 @@ define([
                 $('#container-' + $scope.layout.qInfo.qId).scroll(moveScroll);
             });
             // -------------------------------
+            var clone_table = null;
             function moveScroll() {
-                var containerId = '#container-' + $scope.layout.qInfo.qId;
-                var tableContainerId = '#table-container-' + $scope.layout.qInfo.qId;
-                var tableId = '#table-' + $scope.layout.qInfo.qId;
+                let containerId = '#container-' + $scope.layout.qInfo.qId;
+                let tableContainerId = '#table-container-' + $scope.layout.qInfo.qId;
+                let tableId = '#table-' + $scope.layout.qInfo.qId;
+                let cloneId = 'clone-' + $scope.layout.qInfo.qId;
 
-                var clone_table = $("#clone");
+                clone_table = $('#' + cloneId);
                 let containerTop = $(containerId).offset().top;
                 let scroll = $(containerId).scrollTop();
                 let anchor_top = $(tableId).offset().top;
 
-                if ($(tableId).width() !== $("#clone").width()) {
-                    $("#clone").remove();
+                if ($(tableId).width() !== clone_table.width()) {
+                    $('#' + cloneId).remove();
                 }
                 if (scroll + containerTop > anchor_top) {
-                    clone_table = $("#clone");
+                    clone_table = $('#' + cloneId);
                     if (clone_table.length === 0) {
                         clone_table = $(tableId).clone();
-                        clone_table.attr('id', 'clone');
+                        clone_table.attr('id', cloneId);
                         clone_table.css({
                             position: 'fixed',
                             'pointer-events': 'none',
@@ -553,11 +554,11 @@ define([
                         });
                         clone_table.width($(tableId).width());
                         $(tableContainerId).append(clone_table);
-                        $("#clone").css({ visibility: 'hidden' });
-                        $("#clone thead").css({ visibility: 'visible' });
+                        clone_table.css({ visibility: 'hidden' });
+                        clone_table.find('thead').css({ visibility: 'visible' });
                     }
                 } else {
-                    $("#clone").remove();
+                    $('#' + cloneId).remove();
                 }
             }
             // -------------------------------
