@@ -91,12 +91,18 @@ define([
                         expression: "optional",
                         defaultValue: ""
                     },
-                    subtitle: {
+                    ticker: {
                         type: "boolean",
                         ref: "qDef.pTicker",
                         label: "Ticker",
                         defaultValue: false
-                    },
+					},
+					comment: {
+						type: "boolean",
+						ref: "qDef.pComment",
+						label: "Comment",
+						defaultValue: false
+					},
                     iconClass: {
                         type: "string",
                         ref: "qDef.pIconClass",

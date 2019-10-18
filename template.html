@@ -5,7 +5,8 @@
                 <tr>
                     <th rowspan="2" colspan="2"></th>
                     <th rowspan="2" colspan="1" class="text-left" style="max-width:80px!important;vertical-align:bottom !important;">
-                        <span ng-repeat="col in columnOrder track by $index" ng-show="table.headers[col].qDimensionInfo.pTicker &&  $index > 4">
+                        <span ng-repeat="col in columnOrder track by $index" 
+                              ng-show="table.headers[col].qDimensionInfo.pTicker &&  $index > 4">
                             {{table.headers[col].qFallbackTitle}}
                         </span>
                     </th>
@@ -19,7 +20,7 @@
                         style="font-size: {{layout.props.headerFontSize}}; width:{{table.headers[col].qMeasureInfo.pColumnSize || table.headers[col].qDimensionInfo.pColumnSize}}"
                         class="{{table.headers[col].qMeasureInfo.pColspanTitle > 1 ? 'text-center':(table.headers[col].qMeasureInfo.pTextAlign || table.headers[col].qDimensionInfo.pTextAlign)}}
                         {{$index <= 4 ? 'ng-hide':''}} {{table.headers[col].qMeasureInfo.pColspanTitle == 0 ? 'ng-hide':''}}
-                        {{table.headers[col].qDimensionInfo.pTicker &&  $index > 4 ? 'ng-hide':''}}
+                        {{(table.headers[col].qDimensionInfo.pTicker || table.headers[col].qDimensionInfo.pComment) &&  $index > 4 ? 'ng-hide':''}}
                         {{CheckHide(col)[1]==table.headers[col].qMeasureInfo.pColspanTitle ? 'ng-hide':''}} text-type1">
                         <span ng-show="!table.headers[col].qMeasureInfo.qAttrExprInfo[1].qFallbackTitle && (table.headers[col].qMeasureInfo.pColspanTitle > 0 || $index < dimLength)">
                             {{table.headers[col].qFallbackTitle}}
@@ -76,7 +77,8 @@
                     </td>
                     <!-- Columns -->
                     <td ng-repeat="col in columnOrder track by $index" ng-init="$cellIndex = $index"
-                        class="{{$cellIndex > 4 ? '':'ng-hide'}} {{table.headers[col].qDimensionInfo.pTicker?'ng-hide':''}}
+                        class="{{$cellIndex > 4 ? '':'ng-hide'}} 
+                        {{(table.headers[col].qDimensionInfo.pTicker||table.headers[col].qDimensionInfo.pComment) ? 'ng-hide':''}}
                         {{CheckHide(col)[0]==1 ? 'ng-hide':''}}
                         {{table.headers[col].qMeasureInfo.pTextAlign || table.headers[col].qDimensionInfo.pTextAlign}}"
                         style="background-color: {{table.headers[col].qMeasureInfo.pColumnColor}}; font-size: {{table.headers[col].qMeasureInfo.pFontSize ||table.headers[col].qDimensionInfo.pFontSize}};">
@@ -124,9 +126,9 @@
                             <i class="{{layout.qHyperCube.qDataPages[tableIndex[level3.parentIndex3].page].qMatrix[tableIndex[level3.parentIndex3].index][0].qAttrExps.qValues[2].qText}}"></i>
                             <span ng-show="level3.dataL3.length==0">{{level3.count + 1}}</span>
                         </span>
-                        <span ng-repeat="subtitle in table.rows[level3.parentIndex3].cells track by $index" ng-init="$subtitleIndex = $index"
-                              class="text-subtitle {{subtitle.qDimensionInfo.pTicker ? '':'ng-hide'}}">
-                            {{subtitle.qText}} -
+                        <span ng-repeat="ticker in table.rows[level3.parentIndex3].cells track by $index" ng-init="$tickerIndex = $index"
+                              class="text-subtitle {{ticker.qDimensionInfo.pTicker ? '':'ng-hide'}}">
+                            {{ticker.qText}}{{('0'+(level3.count + 1)).substring(('0'+(level3.count + 1)).length -2)}} -
                         </span>
                         <span class="text-level3 cPointer" ng-click="GoUrlMashup(table.rows[level3.parentIndex3].cells[0].qText)">
                             <span ng-show="!table.headers[3].qDimensionInfo.qAttrExprInfo[0].qFallbackTitle">
@@ -135,11 +137,16 @@
                             <span ng-show="table.headers[3].qDimensionInfo.qAttrExprInfo[0].qFallbackTitle">
                                 {{layout.qHyperCube.qDataPages[tableIndex[level3.parentIndex3].page].qMatrix[tableIndex[level3.parentIndex3].index][3].qAttrExps.qValues[0].qText}}
                             </span>
+                            <span ng-repeat="comment in table.rows[level3.parentIndex3].cells track by $index" ng-init="$commentIndex = $index"
+                                  class="text-comment {{comment.qDimensionInfo.pComment ? '':'ng-hide'}}">
+                                {{comment.qText}}
+                            </span>
                         </span>
                     </td>
                     <!-- Columns -->
                     <td ng-repeat="col in columnOrder track by $index" ng-init="$cellIndex = $index"
-                        class="{{$cellIndex > 4 ? '':'ng-hide'}} {{table.headers[col].qDimensionInfo.pTicker?'ng-hide':''}}
+                        class="{{$cellIndex > 4 ? '':'ng-hide'}} 
+                        {{(table.headers[col].qDimensionInfo.pTicker || table.headers[col].qDimensionInfo.pComment)? 'ng-hide':''}}
                         {{CheckHide(col)[0]==1 ? 'ng-hide':''}} border-b-secondary
                         {{table.headers[col].qMeasureInfo.pTextAlign || table.headers[col].qDimensionInfo.pTextAlign}}"
                         style="background-color: {{table.headers[col].qMeasureInfo.pColumnColor}}; font-size: {{table.headers[col].qMeasureInfo.pFontSize ||table.headers[col].qDimensionInfo.pFontSize}};">
@@ -180,17 +187,22 @@
                         <span class="text-level4" hidden>
                             {{level3.count + 1}}.{{$level4Index + 1}}
                         </span>
-                        <span ng-repeat="subtitle in table.rows[level4.dataL4[0].index].cells track by $index" ng-init="$subtitleIndex = $index"
-                              class="text-subtitle {{subtitle.qDimensionInfo.pTicker ? '':'ng-hide'}}">
-                            {{subtitle.qText}} -
+                        <span ng-repeat="ticker in table.rows[level4.dataL4[0].index].cells track by $index" ng-init="$tickerIndex = $index"
+                              class="text-subtitle {{ticker.qDimensionInfo.pTicker ? '':'ng-hide'}}">
+                            {{ticker.qText}}{{('0'+(level3.count + 1)).substring(('0'+(level3.count + 1)).length - 2)}} -
                         </span>
                         <span class="text-level4 cPointer" ng-click="GoUrlMashup(table.rows[level4.dataL4[0].index].cells[0].qText)">
                             {{level4.name}}
+                            <span ng-repeat="comment in table.rows[level4.dataL4[0].index].cells track by $index" ng-init="$commentIndex = $index"
+                                  class="text-comment {{comment.qDimensionInfo.pComment ? '':'ng-hide'}}">
+                                {{comment.qText}}
+                            </span>
                         </span>
                     </td>
                     <!-- Columns -->
                     <td ng-repeat="col in columnOrder track by $index" ng-init="$cellIndex = $index"
-                        class="{{$cellIndex > 4 ? '':'ng-hide'}} {{table.headers[col].qDimensionInfo.pTicker?'ng-hide':''}}
+                        class="{{$cellIndex > 4 ? '':'ng-hide'}} 
+                        {{(table.headers[col].qDimensionInfo.pTicker || table.headers[col].qDimensionInfo.pComment)? 'ng-hide':''}}
                         {{CheckHide(col)[0]==1 ? 'ng-hide':''}} border-b-secondary
                         {{table.headers[col].qMeasureInfo.pTextAlign || table.headers[col].qDimensionInfo.pTextAlign}}"
                         style="background-color: {{table.headers[col].qMeasureInfo.pColumnColor}}; font-size: {{table.headers[col].qMeasureInfo.pFontSize ||table.headers[col].qDimensionInfo.pFontSize}};">

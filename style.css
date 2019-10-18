@@ -99,6 +99,13 @@
     font-family: Circular Medium, QlikView Sans, sans-serif !important;
 }
 
+.qv-object-KpiTable3 .text-comment {
+    font-size: 10px;
+    color: gray;
+    font-weight: bold;
+    font-family: Circular Medium, QlikView Sans, sans-serif !important;
+}
+
 .qv-object-KpiTable3 .td-w-30 {
     min-width: 30px !important;
 }

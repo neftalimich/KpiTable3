@@ -226,8 +226,8 @@ define([
                     });
                 });
 
+				$scope.loading = false;
                 //console.log("cubeGrouped", $scope.cubeGrouped);
-                //$scope.LoadCharts("cube1Grouped");
             };
 
             // ------------------------------- Collapse 
