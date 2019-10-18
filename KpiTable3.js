@@ -96,7 +96,6 @@ define([
                         .finally(f => {
                             $scope.loading = false;
                             $scope.GroupData();
-                            $scope.NextPageCube2();
                         });
                 }
                 //console.log("table",table);
@@ -325,137 +324,12 @@ define([
             };
             // -------------------------------
 
-            // ------------------------------- CUBE 2
-            var qDimensionTemplate = {
-                qDef: {
-                    qGrouping: "N",
-                    qFieldDefs: "CHANGE_ME",
-                    qFieldLabels: [""],
-                    autoSort: false,
-                    qSortCriterias: [
-                        {
-                            qSortByAscii: 0
-                        }
-                    ]
-                },
-                qNullSuppression: true
-            };
-            var qMeasureTemplate = {
-                qDef: {
-                    qLabel: "",
-                    qDescription: "",
-                    qTags: [""],
-                    qGrouping: "N",
-                    qDef: "CHANGE_ME",
-                    qNumFormat: {
-                        qDec: ".",
-                        qFmt: "#,##0.00",
-                        qThou: ",",
-                        qType: "F",
-                        qUseThou: 0,
-                        qnDec: 2
-                    },
-                    autoSort: false
-                },
-                qAttributeExpressions: [],
-                qSortBy: {
-                    qSortByState: 0,
-                    qSortByFrequency: 0,
-                    qSortByNumeric: 0,
-                    qSortByAscii: 0,
-                    qSortByLoadOrder: 0,
-                    qSortByExpression: 0,
-                    qExpression: {
-                        qv: ""
-                    }
-                }
-            };
-
-            // ------------------------------- Watchers 2
-            $scope.$watchCollection("layout.cube2Dimensions", function (newVal) {
-                let qDimensions = [];
-                angular.forEach(newVal, function (value, key) {
-                    if (value.dimension !== "") {
-                        let qDimAux = JSON.parse(JSON.stringify(qDimensionTemplate));
-                        qDimAux.qDef.qLabel = [value.label];
-                        qDimAux.qDef.qFieldDefs = [value.dimension];
-                        qDimensions.push(qDimAux);
-                    }
-                });
-
-                // $scope.backendApi.applyPatches([
-                //     {
-                //         "qPath": "/cube2/qHyperCubeDef/qDimensions",
-                //         "qOp": "replace",
-                //         "qValue": JSON.stringify(qDimensions)
-                //     }
-                // ], false);
-            });
-            $scope.$watchCollection("layout.cube2Measures", function (newVal) {
-                let qMeasures = [];
-                angular.forEach(newVal, function (value, key) {
-                    if (value.measure !== "") {
-                        let qMeaAux = JSON.parse(JSON.stringify(qMeasureTemplate));
-                        qMeaAux.qDef.qLabel = value.label;
-                        qMeaAux.qDef.qDef = value.measure;
-                        qMeaAux.qDef.pColor = value.qDef.pColor ? value.qDef.pColor : "";
-                        if (value.qAttributeExpressions) {
-                            qMeaAux.qAttributeExpressions.push(value.qAttributeExpressions[0]);
-                            qMeaAux.qAttributeExpressions.push(value.qAttributeExpressions[1]);
-                        }
-                        qMeasures.push(qMeaAux);
-                    }
-                });
-
-                // $scope.backendApi.applyPatches([
-                //     {
-                //         "qPath": "/cube2/qHyperCubeDef/qMeasures",
-                //         "qOp": "replace",
-                //         "qValue": JSON.stringify(qMeasures)
-                //     }
-                // ], false);
-            });
-            $scope.$watchCollection("layout.cube2.qHyperCube.qDataPages", function (newVal) {
-                angular.element(document).ready(function () {
-                    $scope.qDataPagesCube2[0] = JSON.parse(JSON.stringify($scope.layout.cube2.qHyperCube.qDataPages[0]));
-                    //$scope.GroupDataChart();
-                    //$scope.LoadCharts("");
-                });
-            });
-            // -------------------------------
-
-            // ------------------------------- NextPage
-            $scope.currentPage = 1;
-            $scope.qDataPagesCube2 = [];
-            $scope.NextPageCube2 = function () {
-                let requestPage = [{
-                    qTop: $scope.layout.cube2.qHyperCube.qDataPages[0].qArea.qHeight * $scope.currentPage,
-                    qLeft: 0,
-                    qWidth: $scope.layout.cube2.qHyperCube.qDataPages[0].qArea.qWidth,
-                    qHeight: $scope.layout.cube2.qHyperCube.qDataPages[0].qArea.qHeight
-                }];
-
-                $scope.ext.model.getHyperCubeData('/cube2/qHyperCubeDef', requestPage).then(function (value) {
-                    if ($scope.qDataPagesCube2.length === $scope.currentPage) {
-                        $scope.qDataPagesCube2.push(value[0]);
-                    } else {
-                        $scope.qDataPagesCube2[$scope.currentPage] = value[0];
-                    }
-                    $scope.currentPage += 1;
-                    $scope.GroupDataChart();
-                    $timeout(function () {
-                        $scope.LoadCharts("");
-                    }, 1000);
-                });
-            };
-            // -------------------------------
-
             // ------------------------------- Extra
             $scope.GoUrl = function (id) {
-                if (id.length > 0) {
-                    app.field($scope.layout.props.chartfield).selectMatch(id, !1);
-                    qlik.navigation.gotoSheet($scope.layout.props.selectedSheet);
-                }
+                //if (id.length > 0) {
+                //    app.field($scope.layout.props.chartfield).selectMatch(id, !1);
+                //    qlik.navigation.gotoSheet($scope.layout.props.selectedSheet);
+                //}
             };
             $scope.GoUrlMashup = function (id) {
                 window.location = "CoppelMashup.html#?menu=5&submenu=1&f.KPI_ID=" + id;

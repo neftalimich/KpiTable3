@@ -228,94 +228,6 @@ define([
             sorting: {
                 uses: "sorting"
             },
-            cube2props: {
-                label: "Cube 2",
-                type: "items",
-                items: {
-                    Dimensions: {
-                        type: "array",
-                        ref: "cube2Dimensions",
-                        label: "List of Dimensions",
-                        itemTitleRef: "label",
-                        allowAdd: true,
-                        allowRemove: true,
-                        addTranslation: "Add Dimension",
-                        items: {
-                            dimension: {
-                                type: "string",
-                                ref: "dimension",
-                                label: "Dimension Expression",
-                                expression: "always",
-                                expressionType: "dimension"
-                            },
-                            label: {
-                                type: "string",
-                                ref: "label",
-                                label: "Label",
-                                expression: "optional"
-                            }
-                        }
-                    },
-                    Measures: {
-                        type: "array",
-                        ref: "cube2Measures",
-                        label: "List of Measures",
-                        itemTitleRef: "label",
-                        allowAdd: true,
-                        allowRemove: true,
-                        addTranslation: "Add Measure",
-                        items: {
-                            measure: {
-                                type: "string",
-                                ref: "measure",
-                                label: "Measure Expression",
-                                expression: "always",
-                                expressionType: "measure"
-                            },
-                            label: {
-                                type: "string",
-                                ref: "label",
-                                label: "Label",
-                                expression: "optional"
-                            },
-                            qType: {
-                                type: "string",
-                                ref: "qType",
-                                label: "qType",
-                                defaultValue: "F"
-                            },
-                            qFmt: {
-                                type: "string",
-                                ref: "qFmt",
-                                label: "qFmt",
-                                defaultValue: "#,##0.00"
-                            },
-                            qnDec: {
-                                type: "integer",
-                                ref: "qnDec",
-                                label: "qnDec",
-                                defaultValue: 2
-                            },
-                            pointBackgroundColor: {
-                                type: "string",
-                                component: "expression",
-                                ref: "pointBackgroundColor",
-                                label: "Point Background Color",
-                                expression: "optional",
-                                defaultValue: ""
-                            },
-                            pointBorderColor: {
-                                type: "string",
-                                component: "expression",
-                                ref: "pointBorderColor",
-                                label: "Point Border Color",
-                                expression: "optional",
-                                defaultValue: ""
-                            }
-                        }
-                    }
-                }
-            },
             settings: {
                 uses: "settings",
                 items: {
@@ -334,18 +246,6 @@ define([
                                 label: "Cube 1 - Initial fetch rows",
                                 type: "number",
                                 defaultValue: 50
-                            },
-                            initFetchCols2: {
-                                ref: "cube2.qHyperCubeDef.qInitialDataFetch.0.qWidth",
-                                label: "Cube 2 - Initial fetch cols",
-                                type: "number",
-                                defaultValue: 5
-                            },
-                            initFetchRows2: {
-                                ref: "cube2.qHyperCubeDef.qInitialDataFetch.0.qHeight",
-                                label: "Cube 2 -Initial fetch rows",
-                                type: "number",
-                                defaultValue: 2000
                             }
                         }
                     },
@@ -446,13 +346,6 @@ define([
                                     });
                                 }
                             },
-                            chartfield: {
-                                type: "string",
-                                ref: "props.chartfield",
-                                label: "Chart Field",
-                                expression: "optional",
-                                defaultValue:"GRÁFICO HISTÓRICO"
-                            },
                             tableHeaderFontSize: {
                                 type: "string",
                                 ref: "props.headerFontSize",
@@ -497,7 +390,14 @@ define([
                                     value: false,
                                     label: "No"
                                 }],
-                                defaultValue: true
+                                defaultValue: false
+                            },
+                            chartfield: {
+                                type: "string",
+                                ref: "props.chartfield",
+                                label: "Chart Field",
+                                expression: "optional",
+                                defaultValue: "GRÁFICO HISTÓRICO"
                             },
                             chartHeight: {
                                 type: "number",
