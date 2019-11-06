@@ -163,13 +163,13 @@ define([
                         angular.forEach(level2.dataL2, function (level3, key) {
                             let level4Aux = level3.dataL3.reduce(function (obj, item, index) {
                                 let keyAux = item.item[4].qText;
-                                obj[keyAux] = obj[keyAux] || [];
-                                obj[keyAux].push({ index: item.index, item: item.item });
+								obj[keyAux] = obj[keyAux] || [];
+								obj[keyAux].push({ index: item.index, item: item.item, newCount: 0 });
                                 return obj;
                             }, {});
 
                             level3.dataL3 = Object.keys(level4Aux).map(function (key) {
-                                return { name: key, description: '', dataL4: level4Aux[key] };
+								return { name: key, description: '', dataL4: level4Aux[key], newCount: 0 };
                             });
 
                             if (!level2.countItems) {
@@ -185,7 +185,8 @@ define([
 
                 let countAux2 = 0;
                 let countAux3 = 0;
-                let countAux4 = 0;
+				let countAux4 = 0;
+				
                 angular.forEach($scope.cubeGrouped, function (level1, key) {
                     level1.countParents = 0;
                     angular.forEach(level1.dataL1, function (level2, key) {
@@ -200,8 +201,8 @@ define([
                             let keeptGoing3 = true;
                             angular.forEach(level3.dataL3, function (level4, index4) {
                                 level4.count = countAux4;
-                                countAux4 += 1;
-                                angular.forEach(level4.dataL4, function (level5, index5) {
+								countAux4 += 1;
+								angular.forEach(level4.dataL4, function (level5, index5) {
                                     if (keeptGoing2 && level5.item[2].qAttrExps.qValues[1].qNum === 1) {
                                         //console.log("x", level5);
                                         level2.parentL2 = level5.item[3];
@@ -226,8 +227,22 @@ define([
                     });
                 });
 
+				let newCount = 1;
+				angular.forEach($scope.cubeGrouped, function (level1, index1) {
+					angular.forEach(level1.dataL1, function (level2, index2) {
+						angular.forEach(level2.dataL2, function (level3, index3) {
+							level3.newCount = newCount;
+							newCount += 1;
+							angular.forEach(level3.dataL3, function (level4, index4) {
+								level4.newCount = newCount;
+								newCount += 1;
+							});
+						});
+					});
+				});
+
 				$scope.loading = false;
-                //console.log("cubeGrouped", $scope.cubeGrouped);
+                console.log("cubeGrouped", $scope.cubeGrouped);
             };
 
             // ------------------------------- Collapse 

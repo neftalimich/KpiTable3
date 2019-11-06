@@ -128,7 +128,8 @@
                         </span>
                         <span ng-repeat="ticker in table.rows[level3.parentIndex3].cells track by $index" ng-init="$tickerIndex = $index"
                               class="text-subtitle {{ticker.qDimensionInfo.pTicker ? '':'ng-hide'}}">
-                            {{ticker.qText}}{{('0'+(level3.count + 1)).substring(('0'+(level3.count + 1)).length -2)}} -
+                            {{ticker.qText}}{{('0'+(level3.newCount)).substring(('0'+(level3.newCount)).length - 2)}} -
+                            <!--{{('0'+(level3.count + 1)).substring(('0'+(level3.count + 1)).length -2)}}-->
                         </span>
                         <span class="text-level3 cPointer" ng-click="GoUrlMashup(table.rows[level3.parentIndex3].cells[0].qText)">
                             <span ng-show="!table.headers[3].qDimensionInfo.qAttrExprInfo[0].qFallbackTitle">
@@ -189,7 +190,8 @@
                         </span>
                         <span ng-repeat="ticker in table.rows[level4.dataL4[0].index].cells track by $index" ng-init="$tickerIndex = $index"
                               class="text-subtitle {{ticker.qDimensionInfo.pTicker ? '':'ng-hide'}}">
-                            {{ticker.qText}}{{('0'+(level3.count + 1)).substring(('0'+(level3.count + 1)).length - 2)}} -
+                            {{ticker.qText}}{{('0'+(level4.newCount)).substring(('0'+(level4.newCount)).length - 2)}} -
+                            <!--[{{('0'+(level3.count + 1)).substring(('0'+(level3.count + 1)).length - 2)}}]-->
                         </span>
                         <span class="text-level4 cPointer" ng-click="GoUrlMashup(table.rows[level4.dataL4[0].index].cells[0].qText)">
                             {{level4.name}}
