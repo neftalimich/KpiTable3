@@ -78,7 +78,7 @@
                     <!-- Columns -->
                     <td ng-repeat="col in columnOrder track by $index" ng-init="$cellIndex = $index"
                         class="{{$cellIndex > 4 ? '':'ng-hide'}} 
-                        {{(table.headers[col].qDimensionInfo.pTicker||table.headers[col].qDimensionInfo.pComment) ? 'ng-hide':''}}
+                        {{(table.headers[col].qDimensionInfo.pTicker || table.headers[col].qDimensionInfo.pComment || table.headers[col].qDimensionInfo.pHide) ? 'ng-hide':''}}
                         {{CheckHide(col)[0]==1 ? 'ng-hide':''}}
                         {{table.headers[col].qMeasureInfo.pTextAlign || table.headers[col].qDimensionInfo.pTextAlign}}"
                         style="background-color: {{table.headers[col].qMeasureInfo.pColumnColor}}; font-size: {{table.headers[col].qMeasureInfo.pFontSize ||table.headers[col].qDimensionInfo.pFontSize}};">
