@@ -103,6 +103,12 @@ define([
 						label: "Comment",
 						defaultValue: false
 					},
+					hide: {
+						type: "boolean",
+						ref: "qDef.pHide",
+						label: "Hide",
+						defaultValue: false
+					},
                     iconClass: {
                         type: "string",
                         ref: "qDef.pIconClass",

@@ -37,6 +37,10 @@
     color: #007bff;
 }
 
+.qv-object-KpiTable3 .text-blue {
+    color: rgb(71,103,245) !important;
+}
+
 .qv-object-KpiTable3 .text-secondary {
     color: lightgray;
 }

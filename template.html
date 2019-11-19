@@ -20,7 +20,7 @@
                         style="font-size: {{layout.props.headerFontSize}}; width:{{table.headers[col].qMeasureInfo.pColumnSize || table.headers[col].qDimensionInfo.pColumnSize}}"
                         class="{{table.headers[col].qMeasureInfo.pColspanTitle > 1 ? 'text-center':(table.headers[col].qMeasureInfo.pTextAlign || table.headers[col].qDimensionInfo.pTextAlign)}}
                         {{$index <= 4 ? 'ng-hide':''}} {{table.headers[col].qMeasureInfo.pColspanTitle == 0 ? 'ng-hide':''}}
-                        {{(table.headers[col].qDimensionInfo.pTicker || table.headers[col].qDimensionInfo.pComment) &&  $index > 4 ? 'ng-hide':''}}
+                        {{(table.headers[col].qDimensionInfo.pTicker || table.headers[col].qDimensionInfo.pComment || table.headers[col].qDimensionInfo.pHide) &&  $index > 4 ? 'ng-hide':''}}
                         {{CheckHide(col)[1]==table.headers[col].qMeasureInfo.pColspanTitle ? 'ng-hide':''}} text-type1">
                         <span ng-show="!table.headers[col].qMeasureInfo.qAttrExprInfo[1].qFallbackTitle && (table.headers[col].qMeasureInfo.pColspanTitle > 0 || $index < dimLength)">
                             {{table.headers[col].qFallbackTitle}}
@@ -124,7 +124,7 @@
                                 <i class="fas fa-circle"></i>
                             </span>
                             <i class="{{layout.qHyperCube.qDataPages[tableIndex[level3.parentIndex3].page].qMatrix[tableIndex[level3.parentIndex3].index][0].qAttrExps.qValues[2].qText}}"></i>
-                            <span ng-show="level3.dataL3.length==0">{{level3.count + 1}}</span>
+                            <span class="text-blue" ng-show="level3.dataL3.length==0">{{level3.count + 1}}</span>
                         </span>
                         <span ng-repeat="ticker in table.rows[level3.parentIndex3].cells track by $index" ng-init="$tickerIndex = $index"
                               class="text-subtitle {{ticker.qDimensionInfo.pTicker ? '':'ng-hide'}}">
@@ -142,12 +142,13 @@
                                   class="text-comment {{comment.qDimensionInfo.pComment ? '':'ng-hide'}}">
                                 {{comment.qText}}
                             </span>
+                            <!--[{{level3.parentIndex3}}]-->
                         </span>
                     </td>
                     <!-- Columns -->
                     <td ng-repeat="col in columnOrder track by $index" ng-init="$cellIndex = $index"
                         class="{{$cellIndex > 4 ? '':'ng-hide'}} 
-                        {{(table.headers[col].qDimensionInfo.pTicker || table.headers[col].qDimensionInfo.pComment)? 'ng-hide':''}}
+                        {{(table.headers[col].qDimensionInfo.pTicker || table.headers[col].qDimensionInfo.pComment || table.headers[col].qDimensionInfo.pHide)? 'ng-hide':''}}
                         {{CheckHide(col)[0]==1 ? 'ng-hide':''}} border-b-secondary
                         {{table.headers[col].qMeasureInfo.pTextAlign || table.headers[col].qDimensionInfo.pTextAlign}}"
                         style="background-color: {{table.headers[col].qMeasureInfo.pColumnColor}}; font-size: {{table.headers[col].qMeasureInfo.pFontSize ||table.headers[col].qDimensionInfo.pFontSize}};">
@@ -178,7 +179,7 @@
                         ng-show="$level4Index==0"
                         class="text-center text-level3 border-r-secondary border-b-secondary"
                         style="white-space:nowrap !important;width:20px!important;">
-                        <span>{{level3.count + 1}}</span>
+                        <span class="text-blue">{{level3.count + 1}}</span>
                     </td>
                     <td hidden>Z ({{level3.dataL3.length}},{{level3.countParents}})</td>
                 </tr>
@@ -200,11 +201,12 @@
                                 {{comment.qText}}
                             </span>
                         </span>
+                        <!--[{{level4.dataL4[0].index}}]-->
                     </td>
                     <!-- Columns -->
                     <td ng-repeat="col in columnOrder track by $index" ng-init="$cellIndex = $index"
                         class="{{$cellIndex > 4 ? '':'ng-hide'}} 
-                        {{(table.headers[col].qDimensionInfo.pTicker || table.headers[col].qDimensionInfo.pComment)? 'ng-hide':''}}
+                        {{(table.headers[col].qDimensionInfo.pTicker || table.headers[col].qDimensionInfo.pComment || table.headers[col].qDimensionInfo.pHide)? 'ng-hide':''}}
                         {{CheckHide(col)[0]==1 ? 'ng-hide':''}} border-b-secondary
                         {{table.headers[col].qMeasureInfo.pTextAlign || table.headers[col].qDimensionInfo.pTextAlign}}"
                         style="background-color: {{table.headers[col].qMeasureInfo.pColumnColor}}; font-size: {{table.headers[col].qMeasureInfo.pFontSize ||table.headers[col].qDimensionInfo.pFontSize}};">

@@ -30,13 +30,13 @@ define([
             //setup scope.table
             if (!this.$scope.table) {
                 this.$scope.table = qlik.table(this);
-                console.log("KpiTable3 - Table", this.$scope.table);
+                //console.log("KpiTable3 - Table", this.$scope.table);
             }
             moveScroll();
             return qlik.Promise.resolve();
         },
         controller: ['$scope', function ($scope) {
-            console.log("KpiTable3 - layout", $scope.layout);
+            //console.log("KpiTable3 - layout", $scope.layout);
             $scope.kpiTableId = $scope.layout.qInfo.qId;
             $scope.dimLength = 0;
             $scope.meaLength = 0;
@@ -179,7 +179,6 @@ define([
                             level3.countItems = level3.dataL3.length;
                         });
                     });
-
                 });
                 // -------------------------------
 
@@ -242,7 +241,7 @@ define([
 				});
 
 				$scope.loading = false;
-                console.log("cubeGrouped", $scope.cubeGrouped);
+                //console.log("cubeGrouped", $scope.cubeGrouped);
             };
 
             // ------------------------------- Collapse 
