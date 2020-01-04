@@ -265,6 +265,20 @@ define([
                         type: "items",
                         label: "Table Configuration",
                         items: {
+                            showTickerCount: {
+                                type: "boolean",
+                                component: "switch",
+                                ref: "props.showTickerCount",
+                                label: "Show Ticker Count",
+                                options: [{
+                                    value: true,
+                                    label: "Yes"
+                                }, {
+                                    value: false,
+                                    label: "No"
+                                }],
+                                defaultValue: false
+                            },
                             showGroupIndex: {
                                 type: "boolean",
                                 component: "switch",
