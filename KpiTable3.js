@@ -336,6 +336,13 @@ define([
                 });
                 return result;
             };
+            $scope.FormatTicker = function (ticker) {
+                if (ticker) {
+                    return ticker.replace(/\d+$/, '');
+                } else {
+                    return '';
+                }
+            };
             // -------------------------------
 
             // ------------------------------- Extra
