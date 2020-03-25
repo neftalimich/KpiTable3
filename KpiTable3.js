@@ -106,32 +106,33 @@ define([
                 $scope.loading = true;
                 $scope.cubeGrouped = [];
                 let qMatrixCopy = [];
-                angular.forEach($scope.layout.qHyperCube.qDataPages, function (qDataPage, key) {
+
+                $scope.layout.qHyperCube.qDataPages.forEach(qDataPage => {
                     qMatrixCopy.push.apply(qMatrixCopy, JSON.parse(JSON.stringify(qDataPage.qMatrix)));
                 });
 
                 // -------------------------------
-                let level1 = qMatrixCopy.reduce(function (obj, item, index) {
-                    let keyAux = item[1].qText;
-                    obj[keyAux] = obj[keyAux] || [];
-                    obj[keyAux].push({ index: index, item: item });
-                    return obj;
+                let level1 = qMatrixCopy.reduce((accumulator, currentValue, index) => {
+                    let keyAux = currentValue[1].qText;
+                    accumulator[keyAux] = accumulator[keyAux] || [];
+                    accumulator[keyAux].push({ index: index, item: currentValue });
+                    return accumulator;
                 }, {});
 
-                $scope.cubeGrouped = Object.keys(level1).map(function (key) {
+                $scope.cubeGrouped = Object.keys(level1).map(key => {
                     return { name: key, countItems: level1[key].length, dataL1: level1[key] };
                 });
 
                 // Level1
                 angular.forEach($scope.cubeGrouped, function (level1, key) {
-                    let level2Aux = level1.dataL1.reduce(function (obj, item, index) {
-                        let keyAux = item.item[2].qText;
-                        obj[keyAux] = obj[keyAux] || [];
-                        obj[keyAux].push({ index: item.index, item: item.item });
-                        return obj;
+                    let level2Aux = level1.dataL1.reduce((accumulator, currentValue) => {
+                        let keyAux = currentValue.item[2].qText;
+                        accumulator[keyAux] = accumulator[keyAux] || [];
+                        accumulator[keyAux].push({ index: currentValue.index, item: currentValue.item });
+                        return accumulator;
                     }, {});
 
-                    level1.dataL1 = Object.keys(level2Aux).map(function (key) {
+                    level1.dataL1 = Object.keys(level2Aux).map(key => {
                         return { name: key, description: '', dataL2: level2Aux[key] };
                     });
 
@@ -139,11 +140,11 @@ define([
 
                     //Level2
                     angular.forEach(level1.dataL1, function (level2, key) {
-                        let level3Aux = level2.dataL2.reduce(function (obj, item, index) {
-                            let keyAux = item.item[3].qText;
-                            obj[keyAux] = obj[keyAux] || [];
-                            obj[keyAux].push({ index: item.index, item: item.item });
-                            return obj;
+                        let level3Aux = level2.dataL2.reduce((accumulator, currentValue) => {
+                            let keyAux = currentValue.item[3].qText;
+                            accumulator[keyAux] = accumulator[keyAux] || [];
+                            accumulator[keyAux].push({ index: currentValue.index, item: currentValue.item });
+                            return accumulator;
                         }, {});
 
                         level2.dataL2 = Object.keys(level3Aux).map(function (key) {
@@ -158,14 +159,14 @@ define([
 
                         //Level3
                         angular.forEach(level2.dataL2, function (level3, key) {
-                            let level4Aux = level3.dataL3.reduce(function (obj, item, index) {
-                                let keyAux = item.item[4].qText;
-                                obj[keyAux] = obj[keyAux] || [];
-                                obj[keyAux].push({ index: item.index, item: item.item, newCount: 0 });
-                                return obj;
+                            let level4Aux = level3.dataL3.reduce((accumulator, currentValue) =>{
+                                let keyAux = currentValue.item[4].qText;
+                                accumulator[keyAux] = accumulator[keyAux] || [];
+                                accumulator[keyAux].push({ index: currentValue.index, item: currentValue.item, newCount: 0 });
+                                return accumulator;
                             }, {});
 
-                            level3.dataL3 = Object.keys(level4Aux).map(function (key) {
+                            level3.dataL3 = Object.keys(level4Aux).map(key => {
                                 return { name: key, description: '', dataL4: level4Aux[key], newCount: 0 };
                             });
 
@@ -177,15 +178,17 @@ define([
                         });
                     });
                 });
+                
                 // -------------------------------
 
+                // ------------------------------- Contadores de secuencia Auxiliares
                 let countAux2 = 0;
                 let countAux3 = 0;
                 let countAux4 = 0;
 
-                angular.forEach($scope.cubeGrouped, function (level1, key) {
+                angular.forEach($scope.cubeGrouped, function (level1, index1) {
                     level1.countParents = 0;
-                    angular.forEach(level1.dataL1, function (level2, key) {
+                    angular.forEach(level1.dataL1, function (level2, index2) {
                         level2.count = countAux2;
                         level2.countParents = 0;
                         countAux2 += 1;
@@ -238,7 +241,8 @@ define([
                 });
 
                 $scope.loading = false;
-                //console.log("cubeGrouped", $scope.cubeGrouped);
+                console.log("cubeGrouped", $scope.cubeGrouped);
+                // -------------------------------
             };
 
             // ------------------------------- Collapse 
@@ -434,6 +438,7 @@ define([
                 if ($(tableId).width() !== clone_table.width()) {
                     $('#' + cloneId).remove();
                 }
+
                 if (scroll + containerTop > anchor_top) {
                     clone_table = $('#' + cloneId);
                     if (clone_table.length === 0) {
